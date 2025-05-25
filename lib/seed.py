@@ -9,11 +9,11 @@ engine = create_engine('sqlite:///freebies.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Drop and recreate all tables
+# 
 Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 
-# Sample data
+
 c1 = Company(name="Google", founding_year=1998)
 c2 = Company(name="Amazon", founding_year=1994)
 
