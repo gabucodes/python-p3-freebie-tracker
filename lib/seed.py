@@ -1,29 +1,39 @@
-#!/usr/bin/env python3
-
-# Script goes here!
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from models import Base, Company, Dev, Freebie
 
+# Create the engine and bind it to the database
 engine = create_engine('sqlite:///freebies.db')
+Base.metadata.bind = engine
+
+# Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# 
-Base.metadata.drop_all(engine)
-Base.metadata.create_all(engine)
+# Clear old data (optional: helpful for reseeding)
+session.query(Freebie).delete()
+session.query(Dev).delete()
+session.query(Company).delete()
 
+# Create some companies
+company1 = Company(name="Google", founding_year=1998)
+company2 = Company(name="Amazon", founding_year=1994)
+company3 = Company(name="OpenAI", founding_year=2015)
 
-c1 = Company(name="Google", founding_year=1998)
-c2 = Company(name="Amazon", founding_year=1994)
+# Create some developers
+dev1 = Dev(name="Alice")
+dev2 = Dev(name="Bob")
+dev3 = Dev(name="Charlie")
 
-d1 = Dev(name="Alice")
-d2 = Dev(name="Bob")
+# Create some freebies
+freebie1 = Freebie(item_name="T-shirt", value=20, company=company1, dev=dev1)
+freebie2 = Freebie(item_name="Sticker", value=5, company=company2, dev=dev2)
+freebie3 = Freebie(item_name="Mug", value=15, company=company3, dev=dev1)
+freebie4 = Freebie(item_name="Notebook", value=10, company=company1, dev=dev3)
 
-f1 = Freebie(item_name="T-shirt", value=10, company=c1, dev=d1)
-f2 = Freebie(item_name="Mug", value=5, company=c2, dev=d1)
-f3 = Freebie(item_name="Sticker", value=1, company=c1, dev=d2)
-
-session.add_all([c1, c2, d1, d2, f1, f2, f3])
+# Add and commit everything
+session.add_all([company1, company2, company3, dev1, dev2, dev3, freebie1, freebie2, freebie3, freebie4])
 session.commit()
-print("🌱 Database seeded!")
+
+print("✅ Database seeded successfully!")
